@@ -1,0 +1,48 @@
+{
+  "name": "أذكاري - حصن المسلم",
+  "short_name": "أذكاري",
+  "description": "أذكار وأدعية من حصن المسلم",
+  "start_url": "/adhkar/",
+  "display": "standalone",
+  "background_color": "#F8F4EC",
+  "theme_color": "#1B4332",
+  "orientation": "portrait",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": [
+    "lifestyle",
+    "religion"
+  ],
+  "shortcuts": [
+    {
+      "name": "أذكار الصباح",
+      "url": "/adhkar/",
+      "description": "افتح أذكار الصباح"
+    },
+    {
+      "name": "أذكار المساء",
+      "url": "/adhkar/",
+      "description": "افتح أذكار المساء"
+    }
+  ]
+}
