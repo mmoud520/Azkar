@@ -1,12 +1,12 @@
 {
   "name": "أذكاري - حصن المسلم",
   "short_name": "أذكاري",
-  "description": "أذكار وأدعية من حصن المسلم",
-  "start_url": "/adhkar/",
+  "description": "أذكار وأدعية يومية من كتاب حصن المسلم للشيخ سعيد القحطاني",
+  "start_url": "./",
   "display": "standalone",
-  "background_color": "#F8F4EC",
+  "background_color": "#1B4332",
   "theme_color": "#1B4332",
-  "orientation": "portrait",
+  "orientation": "portrait-primary",
   "lang": "ar",
   "dir": "rtl",
   "icons": [
@@ -14,13 +14,13 @@
       "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     },
     {
       "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     },
     {
       "src": "icon-1024.png",
@@ -44,5 +44,6 @@
       "url": "/adhkar/",
       "description": "افتح أذكار المساء"
     }
-  ]
+  ],
+  "scope": "./"
 }
