@@ -318,14 +318,14 @@ body{font-family:'Noto Naskh Arabic','Arabic Typesetting','Segoe UI',serif;color
   position:relative;display:flex;align-items:center;justify-content:center;
   flex-shrink:0;cursor:pointer;user-select:none;
   -webkit-tap-highlight-color:transparent;
-  border-radius:50%;/* prevent clip on scale */}
-.card-circle-wrap:active .card-circle-svg{transform:rotate(-90deg) scale(.93);}
+  width:200px;height:200px;/* fixed size prevents collapse */}
+.card-circle-wrap:active .card-circle-svg{transform:rotate(-90deg) scale(.92);}
 .card-circle-wrap.done-wrap{cursor:default;}
 .card-circle-svg{
+  position:absolute;top:0;left:0;
   transform:rotate(-90deg);
-  filter:drop-shadow(0 6px 18px rgba(27,67,50,.35));
-  transition:transform .08s cubic-bezier(.4,0,.2,1);
-  overflow:visible;}
+  filter:drop-shadow(0 6px 18px rgba(27,67,50,.3));
+  transition:transform .1s cubic-bezier(.4,0,.2,1);}
 .card-circle-bg{fill:none;stroke:var(--bdr);stroke-width:9;}
 .card-circle-fill{fill:none;stroke:var(--p);stroke-width:9;stroke-linecap:round;
   transition:stroke-dashoffset .28s cubic-bezier(.4,0,.2,1);}
@@ -333,9 +333,9 @@ body{font-family:'Noto Naskh Arabic','Arabic Typesetting','Segoe UI',serif;color
 .card-circle-inner{fill:var(--p);transition:fill .3s;}
 .card-circle-done .card-circle-inner{fill:var(--done-c);}
 .card-count-text{
-  position:absolute;text-align:center;
-  pointer-events:none;/* clicks pass through to wrap */
-  display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  position:absolute;top:0;left:0;right:0;bottom:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;pointer-events:none;}
 .card-count-num{font-size:40px;font-weight:800;color:#fff;line-height:1;
   text-shadow:0 2px 6px rgba(0,0,0,.25);}
 .card-count-of{font-size:13px;color:rgba(255,255,255,.75);margin-top:4px;}
@@ -363,8 +363,8 @@ body{font-family:'Noto Naskh Arabic','Arabic Typesetting','Segoe UI',serif;color
 .card-nav-btn:active{background:var(--card2);}
 .card-nav-btn:disabled{opacity:.3;cursor:default;}
 .card-fadl-btn{background:none;border:1.5px solid var(--acc);color:var(--acc);
-  padding:8px 16px;border-radius:22px;font-size:14px;cursor:pointer;font-family:inherit;
-  flex:1;text-align:center;}
+  padding:7px 18px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;
+  flex-shrink:0;white-space:nowrap;align-self:center;}
 .card-fadl-btn:active{background:var(--acc);color:#fff;}
 .card-indicator{display:flex;gap:5px;align-items:center;justify-content:center;flex-shrink:0;}
 .card-dot{width:6px;height:6px;border-radius:50%;background:var(--bdr);transition:all .3s;}
@@ -1505,7 +1505,7 @@ function renderCardMode() {
       <!-- Text -->
       <div class="card-dhikr-text" style="font-size:var(--fs)">${item.text}</div>
 
-      <!-- Circle IS the button -->
+      <!-- Circle button -->
       <div class="card-circle-wrap${isDone?' card-circle-done done-wrap':''}" id="ctapbtn_${idx}"
            onclick="cardTap(${idx})">
         <svg class="card-circle-svg" width="200" height="200" viewBox="0 0 200 200">
@@ -1515,17 +1515,13 @@ function renderCardMode() {
             stroke-dasharray="${C}" stroke-dashoffset="${dashOffset}"
             id="ccircle_${idx}"/>
         </svg>
-        <div class="card-count-text">
-          ${isDone
-            ? '<span class="card-count-num">✅</span><span class="card-count-of">مكتمل</span>'
-            : `<span class="card-count-num" id="cnum_${idx}">${item.done}</span>
-               <span class="card-count-of">من ${item.count}</span>
-               <span class="card-tap-label">اضغط للتسبيح</span>`}
+        <div class="card-count-text" id="ccounttext_${idx}">
+          ${cardCountHTML(isDone, item.done, item.count, idx)}
         </div>
       </div>
 
-      <!-- Fadl button -->
-      <button class="card-fadl-btn" onclick="cardShowFadl(${idx})">✨ فضل الذكر</button>
+      <!-- Fadl button - small fixed -->
+      <button class="card-fadl-btn" onclick="event.stopPropagation();cardShowFadl(${idx})">✨ فضل الذكر</button>
     </div>`;
   }).join('');
 
@@ -1591,9 +1587,8 @@ function cardTap(idx) {
   if(isDone) {
     if(wrap) {
       wrap.classList.add('card-circle-done','done-wrap');
-      // Update inner content to show done state
-      const countText = wrap.querySelector('.card-count-text');
-      if(countText) countText.innerHTML = '<span class="card-count-num">✅</span><span class="card-count-of">مكتمل</span>';
+      const countText = document.getElementById('ccounttext_' + idx);
+      if(countText) countText.innerHTML = cardCountHTML(true, item.done, item.count, idx);
     }
     // Update progress bar
     const total = list.items.length;
@@ -1720,6 +1715,17 @@ function setDefaultView(mode){
   document.getElementById('view-card-check').textContent = mode === 'card' ? '✓' : '';
   document.getElementById('view-card-check').style.color = mode === 'card' ? 'var(--p)' : 'var(--txt3)';
   toast(mode === 'card' ? '🃏 عرض البطاقات افتراضي' : '📋 عرض القائمة افتراضي');
+}
+
+
+function cardCountHTML(isDone, done, count, idx) {
+  if(isDone) {
+    return '<span class="card-count-num" style="font-size:48px">✅</span>' +
+           '<span class="card-count-of">مكتمل</span>';
+  }
+  return '<span class="card-count-num" id="cnum_' + idx + '">' + done + '</span>' +
+         '<span class="card-count-of">من ' + count + '</span>' +
+         '<span class="card-tap-label">اضغط للتسبيح</span>';
 }
 
 // ════════ INIT ════════
